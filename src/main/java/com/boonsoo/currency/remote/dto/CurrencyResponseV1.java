@@ -1,8 +1,11 @@
 package com.boonsoo.currency.remote.dto;
 
+import lombok.Getter;
+
 import java.math.BigDecimal;
 import java.util.Map;
 
+@Getter
 public class CurrencyResponseV1 {
     private final boolean success;
     private final String terms;

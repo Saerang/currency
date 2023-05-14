@@ -29,4 +29,4 @@ feign:
 #    & format = 1
 currency:
   url: http://api.currencylayer.com/live
-  accessKey: ee50cd7cc73c9b7a7bb3d9617cfb6b9c
+  access_key: ee50cd7cc73c9b7a7bb3d9617cfb6b9c
