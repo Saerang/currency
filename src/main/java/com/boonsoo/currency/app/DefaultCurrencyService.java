@@ -15,9 +15,9 @@ public class DefaultCurrencyService implements CurrencyService {
     private final CurrencyRepository currencyRepository;
 
     @Override
-    public BigDecimal getExchange(CurrencyId currencyId, BigDecimal amount) {
+    public BigDecimal getExchange(CurrencyId currencyId, CurrencyId source, BigDecimal amount) {
         ExchangeCurrency exchangeCurrency
-                = currencyRepository.findExchangeCurrency(currencyId)
+                = currencyRepository.findExchangeCurrency(currencyId, source)
                                     .orElseThrow(() -> new IllegalArgumentException("Currency 가 존재하지 않습니다. currency: " + currencyId));
 
         return exchangeCurrency.getExchange(amount);

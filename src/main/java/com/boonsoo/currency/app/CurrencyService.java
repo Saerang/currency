@@ -5,5 +5,5 @@ import com.boonsoo.currency.domain.CurrencyId;
 import java.math.BigDecimal;
 
 public interface CurrencyService {
-    BigDecimal getExchange(CurrencyId currencyId, BigDecimal amount);
+    BigDecimal getExchange(CurrencyId currencyId, CurrencyId source, BigDecimal amount);
 }

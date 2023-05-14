@@ -22,15 +22,16 @@ public class MapCurrencyRepository implements CurrencyRepository {
     private String accessKey;
 
     @Override
-    public Optional<ExchangeCurrency> findExchangeCurrency(CurrencyId currencyId) {
+    public Optional<ExchangeCurrency> findExchangeCurrency(CurrencyId currencyId, CurrencyId source) {
         if (!currencyMap.containsKey(currencyId)) {
-            setupExternalCurrency();
+            setupExternalCurrency(source);
         }
 
         return Optional.ofNullable(currencyMap.get(currencyId));
     }
 
-    private void setupExternalCurrency() {
+    private void setupExternalCurrency(CurrencyId source) {
+        // TODO: source 로 검색할 수 있도록 추후 수정 필요
         CurrencyResponseV1 currencyResponse = externalCurrency.getCurrency(accessKey);
 
         Map<String, BigDecimal> quotes = currencyResponse.getQuotes();
@@ -41,7 +42,7 @@ public class MapCurrencyRepository implements CurrencyRepository {
                                                  .toList();
 
         for (CurrencyId existCurrency : existCurrencies) {
-            currencyMap.put(existCurrency, ExchangeCurrency.usd(existCurrency, quotes.get(existCurrency.getCurrency())));
+            currencyMap.put(existCurrency, new ExchangeCurrency(existCurrency, source, quotes.get(existCurrency.getCurrency())));
         }
     }
 }
