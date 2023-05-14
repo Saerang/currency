@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <meta charset="UTF-8">
+    <title>환율 계산</title>
+</head>
+<body>
+<h1>환율 계산</h1>
+<br/>
+<h3>송금국가: 미국(USD)</h3>
+<h3>수취국가: <label for="receive_country"></label><select class ="receive_country" id="receive_country" name="receive_country">
+    <option value="" data-exchange="">선택</option>
+<!--    <option value="JPY">일본</option>-->
+<!--    <option value="PHP">필리핀</option>-->
+</select>
+</h3>
+<h3>환율: <span id="exchange_rate"></span></h3>
+<h3>송금액: <label for="amount"></label><input type="text" id="amount" value=""/> USD</h3>
+<input type="button" id="btn_submit" value="Submit">
+<br/><br/>
+<span id="text"></span>
+
+</body>
+<script type="text/javascript">
+
+
+    let currencies;
+    window.onload = function() {
+        setUp("USD");
+
+    };
+
+    function formatCurrency(total) {
+        var neg = false;
+        if(total < 0) {
+            neg = true;
+            total = Math.abs(total);
+        }
+        return (neg ? "-" : '') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
+    }
+
+    function setUp() {
+        $.ajax({
+            type: 'GET',
+            url: '/api/v1/currencies?currencyId=USD',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8'
+        }).done(function (data) {
+            console.log(data);
+            console.log(data.currencies);
+            currencies = data.currencies;
+            $.each(currencies, function (index, json) {
+                $('#receive_country')
+                    .append($("<option value=" + json.currency + " data-exchange=" + formatCurrency(json.exchangeRate) + ">" + json.country + "</option>"));
+
+            });
+        }).fail(function (error) {
+            console.log(JSON.stringify(error));
+        });
+    }
+
+    $(document).ready(function () {
+        $('#btn_submit').click(function () {
+            const exchangeRate = $('#receive_country').val();
+            const amount = $('#amount').val()
+
+            if (amount <= 0) {
+                alert("송금액을 입력해주세요.");
+                $('#amount').focus();
+                return;
+            }
+
+            if (exchangeRate === '') {
+                alert("수취국가를 선택해주세요.");
+                $('#receive_country').focus();
+                return;
+            }
+
+            $.ajax({
+                type: 'GET',
+                url: '/api/v1/currencies/' + exchangeRate + '/exchange?source=USD&amount=' + amount,
+                dataType: 'text',
+                contentType: 'application/json; charset=utf-8'
+            }).done(function (data) {
+                console.log(data);
+                $('#text').html("수취금액은 "+ formatCurrency(data) + " " + exchangeRate + " 입니다.")
+            }).fail(function (error) {
+                console.log(JSON.stringify(error));
+            });
+        })
+
+        $('#receive_country').change(function () {
+            let data = $('select[name=receive_country] option:selected');
+            let exchange = data.attr("data-exchange");
+            let currency = data.val();
+
+            if (currency === "") {
+                $('#exchange_rate').html("");
+                return;
+            }
+
+            $('#exchange_rate').html(exchange + " " + currency + "/USD");
+        });
+
+
+    });
+
+
+</script>
+</html>

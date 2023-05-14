@@ -1,23 +1,28 @@
 package com.boonsoo.currency.domain;
 
+import lombok.Getter;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Getter
 public enum CurrencyId {
-    KRW("KRW", 2),
-    JPY("JPY", 3),
-    PHP("PHP", 3),
-    USD("USD", 1),
-    UNKNOWN("", 0);
+    KRW("KRW", "한국", 2),
+    JPY("JPY", "일본", 3),
+    PHP("PHP", "필리핀", 3),
+    USD("USD", "미국", 1),
+    UNKNOWN("", "알수없음", 0);
 
     private final String currency;
+    private final String country;
     private final int scale;
 
-    CurrencyId(String currency, int scale) {
+    CurrencyId(String currency, String country, int scale) {
         this.currency = currency;
+        this.country = country;
         this.scale = scale;
     }
 
@@ -26,15 +31,6 @@ public enum CurrencyId {
             = Collections.unmodifiableMap(Stream.of(values())
                                                 .collect(Collectors.toMap(CurrencyId::getCurrency, x -> x)));
 
-
-    public String getCurrency() {
-        return currency;
-    }
-
-
-    public int getScale() {
-        return scale;
-    }
 
     public static boolean existCurrency(CurrencyId currencyId) {
         return currencyId != UNKNOWN;
