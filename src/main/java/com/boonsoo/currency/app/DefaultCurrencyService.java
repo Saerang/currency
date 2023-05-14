@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -17,9 +18,14 @@ public class DefaultCurrencyService implements CurrencyService {
     @Override
     public BigDecimal getExchange(CurrencyId currencyId, CurrencyId source, BigDecimal amount) {
         ExchangeCurrency exchangeCurrency
-                = currencyRepository.findExchangeCurrency(currencyId, source)
+                = currencyRepository.findByExchangeCurrencyAndSource(currencyId, source)
                                     .orElseThrow(() -> new IllegalArgumentException("Currency 가 존재하지 않습니다. currency: " + currencyId));
 
         return exchangeCurrency.getExchange(amount);
+    }
+
+    @Override
+    public List<ExchangeCurrency> findAllBySource(CurrencyId source) {
+        return currencyRepository.findAllBySource(source);
     }
 }

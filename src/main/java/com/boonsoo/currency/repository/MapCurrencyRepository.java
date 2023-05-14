@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,7 +23,7 @@ public class MapCurrencyRepository implements CurrencyRepository {
     private String accessKey;
 
     @Override
-    public Optional<ExchangeCurrency> findExchangeCurrency(CurrencyId currencyId, CurrencyId source) {
+    public Optional<ExchangeCurrency> findByExchangeCurrencyAndSource(CurrencyId currencyId, CurrencyId source) {
         if (!currencyMap.containsKey(currencyId)) {
             setupExternalCurrency(source);
         }
@@ -44,5 +45,18 @@ public class MapCurrencyRepository implements CurrencyRepository {
         for (CurrencyId existCurrency : existCurrencies) {
             currencyMap.put(existCurrency, new ExchangeCurrency(existCurrency, source, quotes.get(existCurrency.getCurrency())));
         }
+    }
+
+    @Override
+    public List<ExchangeCurrency> findAllBySource(CurrencyId source) {
+        if (currencyMap == null) {
+            setupExternalCurrency(source);
+        }
+
+        if (currencyMap == null) {
+            return Collections.emptyList();
+        }
+
+        return currencyMap.values().stream().toList();
     }
 }
