@@ -23,9 +23,6 @@
 
 </body>
 <script type="text/javascript">
-
-
-    let currencies;
     window.onload = function() {
         setUp("USD");
 
@@ -49,8 +46,7 @@
         }).done(function (data) {
             console.log(data);
             console.log(data.currencies);
-            currencies = data.currencies;
-            $.each(currencies, function (index, json) {
+            $.each(data.currencies, function (index, json) {
                 $('#receive_country')
                     .append($("<option value=" + json.currency + " data-exchange=" + formatCurrency(json.exchangeRate) + ">" + json.country + "</option>"));
 
