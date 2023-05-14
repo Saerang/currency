@@ -1,0 +1,32 @@
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+logging:
+  level:
+    com.boonsoo.currencystudy.: debug
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 2000
+        loggerLevel: FULL
+
+# ex)
+# http://api.currencylayer.com/live
+#
+#    ? access_key = YOUR_ACCESS_KEY
+#    & source = GBP
+#    & currencies = USD,AUD,CAD,PLN,MXN
+#    & format = 1
+currency:
+  url: http://api.currencylayer.com/live
+  accessKey: ee50cd7cc73c9b7a7bb3d9617cfb6b9c
