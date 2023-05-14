@@ -1,5 +1,7 @@
 package com.boonsoo.currency.domain;
 
+import java.util.Optional;
+
 public interface CurrencyRepository {
-    ExchangeCurrency exchangeCurrency(CurrencyId currencyId);
+    Optional<ExchangeCurrency> findExchangeCurrency(CurrencyId currencyId);
 }

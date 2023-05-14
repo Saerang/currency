@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class MapCurrencyRepository implements CurrencyRepository {
@@ -21,12 +22,12 @@ public class MapCurrencyRepository implements CurrencyRepository {
     private String accessKey;
 
     @Override
-    public ExchangeCurrency exchangeCurrency(CurrencyId currencyId) {
+    public Optional<ExchangeCurrency> findExchangeCurrency(CurrencyId currencyId) {
         if (!currencyMap.containsKey(currencyId)) {
             setupExternalCurrency();
         }
 
-        return currencyMap.get(currencyId);
+        return Optional.ofNullable(currencyMap.get(currencyId));
     }
 
     private void setupExternalCurrency() {
