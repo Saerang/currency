@@ -1,7 +1,6 @@
 package com.boonsoo.currency.remote;
 
 import com.boonsoo.currency.remote.dto.CurrencyResponseV1;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 
 @SpringBootTest
-@Disabled
+//@Disabled
 class ExternalCurrencyTest {
 
     @Autowired

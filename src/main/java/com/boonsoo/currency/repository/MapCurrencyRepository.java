@@ -7,6 +7,8 @@ import com.boonsoo.currency.remote.ExternalCurrency;
 import com.boonsoo.currency.remote.dto.CurrencyResponseV1;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Repository
 @RequiredArgsConstructor
 public class MapCurrencyRepository implements CurrencyRepository {
     private final Map<CurrencyId, ExchangeCurrency> currencyMap;
@@ -38,22 +41,24 @@ public class MapCurrencyRepository implements CurrencyRepository {
         Map<String, BigDecimal> quotes = currencyResponse.getQuotes();
 
         List<CurrencyId> existCurrencies = quotes.keySet().stream()
+                                                 .map(q -> q.replace(source.getCurrency(), ""))
                                                  .map(CurrencyId::find)
                                                  .filter(CurrencyId::existCurrency)
                                                  .toList();
 
         for (CurrencyId existCurrency : existCurrencies) {
-            currencyMap.put(existCurrency, new ExchangeCurrency(existCurrency, source, quotes.get(existCurrency.getCurrency())));
+            currencyMap.put(existCurrency, new ExchangeCurrency(existCurrency, source,
+                                                                quotes.get(source.getCurrency() + existCurrency.getCurrency())));
         }
     }
 
     @Override
     public List<ExchangeCurrency> findAllBySource(CurrencyId source) {
-        if (currencyMap == null) {
+        if (CollectionUtils.isEmpty(currencyMap)) {
             setupExternalCurrency(source);
         }
 
-        if (currencyMap == null) {
+        if (CollectionUtils.isEmpty(currencyMap)) {
             return Collections.emptyList();
         }
 

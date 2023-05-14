@@ -36,7 +36,6 @@ public enum CurrencyId {
         return scale;
     }
 
-
     public static boolean existCurrency(CurrencyId currencyId) {
         return currencyId != UNKNOWN;
     }
