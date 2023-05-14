@@ -15,10 +15,6 @@ public class ExchangeCurrency {
         this.exchangeRate = exchangeRate;
     }
 
-    public static ExchangeCurrency usd(CurrencyId exchangeCurrency, BigDecimal exchangeRate) {
-        return new ExchangeCurrency(exchangeCurrency, CurrencyId.USD, exchangeRate);
-    }
-
     public BigDecimal getExchange(BigDecimal amount) {
         return amount.multiply(this.exchangeRate).setScale(this.exchangeCurrency.getScale(), RoundingMode.FLOOR);
     }
